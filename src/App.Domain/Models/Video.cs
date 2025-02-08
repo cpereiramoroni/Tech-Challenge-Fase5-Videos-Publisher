@@ -19,6 +19,7 @@ namespace App.Domain.Models
             Nome = nome;
             Status = 1; //cadastrado
             DataCadastro = DateTime.Now;
+            ValidateEntity();
         }
         public void ValidateEntity()
         {

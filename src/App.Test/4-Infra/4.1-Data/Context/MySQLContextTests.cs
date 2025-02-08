@@ -24,7 +24,7 @@ namespace App.Tests.Context
             using var context = new MySQLContext(_dbContextOptions);
 
             // Assert
-            Assert.NotNull(context.Produtos);
+            Assert.NotNull(context.Videos);
         }
 
 
@@ -36,7 +36,7 @@ namespace App.Tests.Context
             using var context = new MySQLContext(_dbContextOptions);
 
             // Act
-            var model = context.Model.FindEntityType(typeof(ProdutoBD));
+            var model = context.Model.FindEntityType(typeof(VideoBD));
 
             // Assert
             Assert.NotNull(model); // Model should exist

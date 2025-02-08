@@ -39,6 +39,7 @@ namespace App.Infra.CrossCutting.IoC
             ///
 
             services.AddScoped<IVideosService, VideosService>();
+            services.AddScoped<IExternalService, ExternalService>();
             ////=======================================================================
             ///
             ///  INSTACIAS DE REPOSITORY

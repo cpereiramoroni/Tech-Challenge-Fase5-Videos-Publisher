@@ -1,7 +1,6 @@
 ﻿using App.Domain.Models;
 using App.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,17 +20,12 @@ namespace App.Domain.Interfaces
             _dbContext.Videos.Add(Video);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<IList<VideoBD>> GetVideosByIdStatus(int? idStatus)
+        public async Task<VideoBD> GetById(int id)
         {
 
             var query = _dbContext.Videos.AsQueryable();
-
-            if (idStatus.HasValue)
-            {
-                query = query.Where(c => c.Status == idStatus.Value);
-            }
-
-            return await query.ToListAsync();
+            query = query.Where(c => c.Id == id);
+            return await query.FirstOrDefaultAsync();
         }
 
         

@@ -7,11 +7,11 @@ using Xunit;
 
 namespace App.Tests.Repositories
 {
-    public class ProdutosRepositoryTests
+    public class VideosRepositoryTests
     {
         private readonly DbContextOptions<MySQLContext> _dbContextOptions;
 
-        public ProdutosRepositoryTests()
+        public VideosRepositoryTests()
         {
             _dbContextOptions = new DbContextOptionsBuilder<MySQLContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
@@ -19,141 +19,99 @@ namespace App.Tests.Repositories
         }
 
         [Fact]
-        public async Task PostProduto_ShouldAddProdutoToDatabase()
+        public async Task PostVideo_ShouldAddVideoToDatabase()
         {
             // Arrange
             using var context = new MySQLContext(_dbContextOptions);
-            var repository = new ProdutosRepository(context);
-            var produto = new ProdutoBD(1, "Produto Teste", 100.50m, true);
+            var repository = new VideosRepository(context);
+            var Video = new VideoBD("Video Teste");
 
             // Act
-            await repository.PostProduto(produto);
+            await repository.PostVideo(Video);
 
             // Assert
-            var savedProduto = await context.Produtos.FirstOrDefaultAsync(p => p.Nome == "Produto Teste");
-            Assert.NotNull(savedProduto);
-            Assert.Equal("Produto Teste", savedProduto.Nome);
-            Assert.Equal(100.50m, savedProduto.Preco);
+            var savedVideo = await context.Videos.FirstOrDefaultAsync(p => p.Nome == "Video Teste");
+            Assert.NotNull(savedVideo);
+            Assert.Equal("Video Teste", savedVideo.Nome);
+            
         }
 
         [Fact]
-        public async Task GetProdutosByIdCategoria_ShouldReturnFilteredProducts_WhenCategoriaExists()
+        public async Task GetVideosByIdCategoria_ShouldReturnFilteredProducts_WhenCategoriaExists()
         {
             // Arrange
             using var context = new MySQLContext(_dbContextOptions);
-            var repository = new ProdutosRepository(context);
+            var repository = new VideosRepository(context);
 
-            context.Produtos.AddRange(
-                new ProdutoBD(1, "Produto 1", 100.00m, true),
-                new ProdutoBD(2, "Produto 2", 200.00m, true),
-                new ProdutoBD(1, "Produto 3", 150.00m, true)
+            context.Videos.AddRange(
+                new VideoBD("Video 1"),
+                new VideoBD("Video 2"),
+                new VideoBD("Video 3" )
             );
             await context.SaveChangesAsync();
 
             // Act
-            var result = await repository.GetProdutosByIdCategoria(1);
+            var result = await repository.GetById(1);
 
             // Assert
             Assert.NotNull(result);
 
-            Assert.All(result, p => Assert.Equal(1, p.CategoriaId));
+            
         }
 
+
         [Fact]
-        public async Task GetProdutosByIdCategoria_ShouldReturnAllProducts_WhenCategoriaIsNull()
+        public async Task GetVideoById_ShouldReturnProduct_WhenProductExists()
         {
             // Arrange
             using var context = new MySQLContext(_dbContextOptions);
-            var repository = new ProdutosRepository(context);
+            var repository = new VideosRepository(context);
 
-            context.Produtos.AddRange(
-                new ProdutoBD(1, "Produto 1", 100.00m, true),
-                new ProdutoBD(2, "Produto 2", 200.00m, true)
-            );
+            var Video = new VideoBD("Video Teste");
+            context.Videos.Add(Video);
             await context.SaveChangesAsync();
 
             // Act
-            var result = await repository.GetProdutosByIdCategoria(null);
+            var result = await repository.GetById(Video.Id);
 
             // Assert
             Assert.NotNull(result);
-
+            Assert.Equal(Video.Nome, result.Nome);
         }
 
         [Fact]
-        public async Task GetProdutoById_ShouldReturnProduct_WhenProductExists()
+        public async Task GetVideoById_ShouldReturnNull_WhenProductDoesNotExist()
         {
             // Arrange
             using var context = new MySQLContext(_dbContextOptions);
-            var repository = new ProdutosRepository(context);
-
-            var produto = new ProdutoBD(1, "Produto Teste", 100.50m, true);
-            context.Produtos.Add(produto);
-            await context.SaveChangesAsync();
+            var repository = new VideosRepository(context);
 
             // Act
-            var result = await repository.GetProdutoById(produto.Id);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(produto.Nome, result.Nome);
-        }
-
-        [Fact]
-        public async Task GetProdutoById_ShouldReturnNull_WhenProductDoesNotExist()
-        {
-            // Arrange
-            using var context = new MySQLContext(_dbContextOptions);
-            var repository = new ProdutosRepository(context);
-
-            // Act
-            var result = await repository.GetProdutoById(999);
+            var result = await repository.GetById(999);
 
             // Assert
             Assert.Null(result);
         }
 
         [Fact]
-        public async Task UpdateProduto_ShouldModifyProductInDatabase()
+        public async Task AddVideo_ShouldModifyProductInDatabase()
         {
             // Arrange
             using var context = new MySQLContext(_dbContextOptions);
-            var repository = new ProdutosRepository(context);
+            var repository = new VideosRepository(context);
 
-            var produto = new ProdutoBD(1, "Produto Original", 100.00m, true);
-            context.Produtos.Add(produto);
-            await context.SaveChangesAsync();
-
-            produto.Nome = "Produto Atualizado";
-            produto.Preco = 150.00m;
+            var Video = new VideoBD("Video Original");
+            
 
             // Act
-            await repository.UpdateProduto(produto);
+            await repository.PostVideo(Video);
 
             // Assert
-            var updatedProduto = await context.Produtos.FirstOrDefaultAsync(p => p.Id == produto.Id);
-            Assert.NotNull(updatedProduto);
-            Assert.Equal("Produto Atualizado", updatedProduto.Nome);
-            Assert.Equal(150.00m, updatedProduto.Preco);
+            var updatedVideo = await context.Videos.FirstOrDefaultAsync(p => p.Id == Video.Id);
+            Assert.NotNull(updatedVideo);
+            
         }
 
-        [Fact]
-        public async Task DeleteProduto_ShouldRemoveProductFromDatabase()
-        {
-            // Arrange
-            using var context = new MySQLContext(_dbContextOptions);
-            var repository = new ProdutosRepository(context);
-
-            var produto = new ProdutoBD(1, "Produto Teste", 100.50m, true);
-            context.Produtos.Add(produto);
-            await context.SaveChangesAsync();
-
-            // Act
-            await repository.DeleteProduto(produto);
-
-            // Assert
-            var deletedProduto = await context.Produtos.FirstOrDefaultAsync(p => p.Id == produto.Id);
-            Assert.Null(deletedProduto);
-        }
+       
     }
 }

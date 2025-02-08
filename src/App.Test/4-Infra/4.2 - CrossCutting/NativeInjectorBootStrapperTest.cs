@@ -34,7 +34,7 @@ namespace App.Test._4_Infra._4._2___CrossCutting
 
         [Trait("Categoria", "NativeInjectorBootStrapper")]
         [Theory(DisplayName = "NativeInjectorBootStrapper")]
-        [InlineData(typeof(IProdutosRepository))]
+        [InlineData(typeof(IVideosRepository))]
 
         [InlineData(typeof(IVideosService))]
 

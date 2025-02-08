@@ -20,31 +20,26 @@ namespace Api.Controllers
         }
 
         #region [GET/Videos]
-        [SwaggerResponse(200, "Consulta executada com sucesso!", typeof(List<Video>))]
+        [SwaggerResponse(200, "Consulta executada com sucesso!", typeof(Video))]
         [SwaggerResponse(204, "Requisição concluída, porém não há dados de retorno!")]
         [SwaggerResponse(400, "Condição prévia dada em um ou mais dos campos avaliado como falsa.")]
-        [HttpGet("")]
+        [HttpGet("/{idvideo}")]
         [SwaggerOperation(
-            Summary = "Busca todos os Videos.",
+            Summary = "Busca um Video.",
             Description = @"Endpoint para retornar os Videos que foram cadastrados no sistema. A busca pode ser feita pelos filtros abaixo:</br></br>
                             <b>Parâmetros de entrada:</b></br></br>
-                             &bull; <b>Status</b>: status. &rArr; <font color='green'><b>Opcional</b></font><br>
-                             <strong> 1 = </strong> Em Processamento<br/>
-                             <strong> 2 = </strong> Processado<br/>
-                             <strong> 3 = </strong>  Error<br/>
-                             
-                        
+                             &bull; <b>idVideo</b>: idVideo. &rArr; <font color='Red'><b>Obrigatório</b></font><br>
             ",
             Tags = new[] { "Videos" }
         )]
         [Consumes("application/json")]
-        public async Task<IActionResult> GetVideos([FromQuery] int? status)
+        public async Task<IActionResult> GetVideos([FromRoute] int idvideo)
         {
 
-            var lstRtn = await _VideosService.GetProdutoByStatus(status);
-            if (lstRtn.Count == 0)
+            var itemrnt = await _VideosService.GetById(idvideo);
+            if (itemrnt is null)
                 return NoContent();
-            return Ok(lstRtn);
+            return Ok(itemrnt);
         }
         #endregion
 
@@ -69,7 +64,7 @@ namespace Api.Controllers
         [Consumes("application/json")]
         public async Task<IActionResult> Post([FromBody] PostVideo input)
         {
-            var rnt = await _VideosService.PostProduto(input);
+            var rnt = await _VideosService.Post(input);
             return StatusCode((int)HttpStatusCode.Created,new { id = rnt });
 
         }

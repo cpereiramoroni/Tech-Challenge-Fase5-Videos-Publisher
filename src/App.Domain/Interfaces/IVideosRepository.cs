@@ -7,6 +7,6 @@ namespace App.Domain.Interfaces
     public interface IVideosRepository
     {
         Task PostVideo(VideoBD Video);
-        Task<IList<VideoBD>> GetVideosByIdStatus(int? idStatus);
+        Task<VideoBD> GetById(int id);
     }
 }

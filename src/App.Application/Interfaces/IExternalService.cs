@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace App.Application.Interfaces
 {
-    public interface IVideosService
+    public interface IExternalService
     {
-        Task<int> Post(PostVideo input);
-        Task<Video> GetById(int idVideo);
-
-
+        Task SaveFileS3(PostVideo input, int id);
+        Task PublishedRabbit(int id);
+        Task<string> GetZipS3(int id);
     }
 }
