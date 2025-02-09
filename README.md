@@ -1,6 +1,6 @@
-# TechChallenge-Grupo24-Produto
+# TechChallenge-Fase05-Grupo24-Publisher
 
-Este repositório é dedicado ao microsserviço de clientes. Neste foi utilizado o mysql no RDS como banco de dados
+Este repositório é dedicado ao microsserviço de Publisher de videos para processamento posterior. Neste foi utilizado o mysql no RDS como banco de dados e o RabbitMQ
 
 O deploy deste foi feito Utilizando aws Lambda - serveless
 análise de código e cobertura de testes utilizando SonarCloud são realizados via Github Actions.
